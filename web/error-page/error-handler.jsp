@@ -98,11 +98,12 @@
 <page version="2.0">
   <div>
     <%= _((String) request.getAttribute("error.message.code"), request) %>
+    <br/>
   </div>
 
   <% if (request.getAttribute("startPage") != null) { %>
     <navigation>
-      <link pageId="<%= request.getAttribute("startPage") %>"><%= _("start.page", request) %></link>
+      <link pageId="<%= request.getAttribute("startPage") %>" accesskey="1"><%= _("start.page", request) %></link>
     </navigation>
   <% } %>
 </page>
