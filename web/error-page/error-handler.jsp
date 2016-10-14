@@ -1,3 +1,5 @@
+<%@ page import="mobi.eyeline.utils.restclient.web.RestClient" %>
+<%@ page import="mobi.eyeline.utils.restclient.web.RestClientException" %>
 <%@ page import="org.apache.log4j.Logger" %>
 <%@ page import="org.json.JSONObject" %>
 <%@ page import="java.nio.charset.StandardCharsets" %>
@@ -9,7 +11,34 @@
 <%@ page contentType="application/xml; charset=UTF-8" language="java" %>
 
 <%!
+
+  static final String API_ROOT = "http://localhost:11201/wstorage/v2";
+
   private final Logger log = Logger.getLogger("error-handler");
+
+  private boolean isDeveloperModeEnabled(String wnumber, String serviceId) {
+    try {
+      final String safeSid = serviceId.replace(".", "_");
+
+      final String value = new RestClient()
+          .json(API_ROOT + "/profile/" + wnumber + "/" + "services.dev-mode-" + safeSid)
+          .object()
+          .getString("value");
+
+      return "true".equals(value);
+
+    } catch (RestClientException.HttpRequestFailedException e) {
+      if (e.getCode() == 404)
+        return false;
+
+      log.warn("Failed checking devmode: userId = [" + wnumber + "], serviceId = [" + serviceId + "]", e);
+      return false;
+
+    } catch (Exception e) {
+      log.warn("Failed checking devmode: userId = [" + wnumber + "], serviceId = [" + serviceId + "]", e);
+      return false;
+    }
+  }
 
   public static String toString(Map<String, String[]> map) {
     final StringBuilder result = new StringBuilder();
@@ -66,6 +95,8 @@
 
 <%
 
+  final String userId = request.getParameter("user_id");
+
   request.setAttribute("error.message.code", "error.message");
 
   final String message = request.getParameter("error");
@@ -78,6 +109,13 @@
       final String startPage = obj.optString("serviceStartPage");
       if (startPage != null) {
         request.setAttribute("startPage", startPage);
+      }
+
+      final String serviceId = obj.optString("serviceId");
+
+      final boolean devMode = isDeveloperModeEnabled(userId, serviceId);
+      if (devMode) {
+        request.setAttribute("obj", obj);
       }
 
       if ("TG_UNSUPPORTED_CLIENT".equals(obj.optString("code"))) {
@@ -96,9 +134,46 @@
 %>
 
 <page version="2.0">
+
   <div>
     <%= _((String) request.getAttribute("error.message.code"), request) %>
-    <br/>
+
+    <% if (request.getAttribute("obj") != null &&
+        !"sms".equals(request.getProtocol()) && !"ussd".equals(request.getProtocol())) { %>
+
+      <br/>
+      <br/>
+
+      <b>Detailed info</b>
+      <br/>
+
+      <% if (((JSONObject) request.getAttribute("obj")).optString("code") != null) { %>
+        Code: <%=((JSONObject) request.getAttribute("obj")).optString("code")%>.
+        <br/>
+      <% } %>
+
+      <% if (((JSONObject) request.getAttribute("obj")).optString("message") != null) { %>
+        Description: <%=((JSONObject) request.getAttribute("obj")).optString("message")%>.
+        <br/>
+      <% } %>
+
+      <% if (((JSONObject) request.getAttribute("obj")).optString("serviceId") != null) { %>
+        Service: <%=((JSONObject) request.getAttribute("obj")).optString("serviceId")%>.
+        <br/>
+      <% } %>
+
+      <% if (((JSONObject) request.getAttribute("obj")).optString("uri") != null) { %>
+        Page URI: <%=((JSONObject) request.getAttribute("obj")).optString("uri")%>.
+        <br/>
+      <% } %>
+
+      <% if (((JSONObject) request.getAttribute("obj")).optString("details") != null &&
+          !((JSONObject) request.getAttribute("obj")).optString("details").trim().isEmpty()) { %>
+        Details: <%=((JSONObject) request.getAttribute("obj")).optString("details")%>.
+      <% } %>
+
+      <br/>
+    <% } %>
   </div>
 
   <% if (request.getAttribute("startPage") != null) { %>
