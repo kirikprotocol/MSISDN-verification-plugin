@@ -106,12 +106,12 @@
     try {
       final JSONObject obj = new JSONObject(message);
 
-      final String startPage = obj.optString("serviceStartPage");
+      final String startPage = obj.optString("service_start_page");
       if (startPage != null) {
         request.setAttribute("startPage", startPage);
       }
 
-      final String serviceId = obj.optString("serviceId");
+      final String serviceId = obj.optString("service");
 
       final boolean devMode = isDeveloperModeEnabled(userId, serviceId);
       if (devMode) {
@@ -157,7 +157,7 @@
         <br/>
       <% } %>
 
-      <% if (((JSONObject) request.getAttribute("obj")).optString("serviceId") != null) { %>
+      <% if (((JSONObject) request.getAttribute("obj")).optString("service") != null) { %>
         Service: <%=((JSONObject) request.getAttribute("obj")).optString("serviceId")%>.
         <br/>
       <% } %>
