@@ -207,7 +207,7 @@
   final String target = handle(request);
 %>
 
-<% if (target.equals("PAGE_REQUEST_MSISDN") && "skype".equals(request.getParameter("protocol"))) { %>
+<% if (target.equals("PAGE_REQUEST_MSISDN") && !"telegram".equals(request.getParameter("protocol"))) { %>
   <jsp:include page="request_msisdn_skype.jsp" flush="true"/>
 
 <% } else if (target.equals("PAGE_REQUEST_MSISDN")) { %>
