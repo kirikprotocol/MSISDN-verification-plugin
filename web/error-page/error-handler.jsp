@@ -158,7 +158,7 @@
       <% } %>
 
       <% if (((JSONObject) request.getAttribute("obj")).optString("service") != null) { %>
-        Service: <%=((JSONObject) request.getAttribute("obj")).optString("serviceId")%>.
+        Service: <%=((JSONObject) request.getAttribute("obj")).optString("service")%>.
         <br/>
       <% } %>
 
