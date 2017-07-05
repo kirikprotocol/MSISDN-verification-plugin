@@ -5,7 +5,7 @@
   <div>
     <input navigationId="submit"
            name="confirm_msisdn"
-           title="<%= _("request.msisdn.skype", request)%>"/>
+           title="<%= _("request.msisdn.default", request)%>"/>
   </div>
   <navigation id="submit">
     <link pageId="index.jsp"><%= _("ready", request)%></link>

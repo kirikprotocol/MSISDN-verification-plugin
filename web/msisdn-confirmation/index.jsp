@@ -208,7 +208,7 @@
 %>
 
 <% if (target.equals("PAGE_REQUEST_MSISDN") && !"telegram".equals(request.getParameter("protocol"))) { %>
-  <jsp:include page="request_msisdn_skype.jsp" flush="true"/>
+  <jsp:include page="request_msisdn_default.jsp" flush="true"/>
 
 <% } else if (target.equals("PAGE_REQUEST_MSISDN")) { %>
   <jsp:include page="request_msisdn_tg.jsp" flush="true"/>
