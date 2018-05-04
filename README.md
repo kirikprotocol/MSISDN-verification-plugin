@@ -45,3 +45,14 @@ Possible values for parameter type:
 - sms - after entering the MSISDN an SMS message with a verification code is sent to that mobile device. The user should then repeat this code in the chat, 
 - ussd_dialog - after entering the MSISDN a network initiated USSD message is sent to that mobile device. The user should choose the proper menu item in the USSD page to verify the MSISDN.
 
+## MSISDN confirmation test bot (web/msisdn-confirmation-test)
+
+The bot’s language is Russian. It gives an example of how to use Verification by MSISDN plugin. The bot’s goal is to get the user’s mobile phone number verified.
+
+To verify the phone number the bot offers several options:
+
+-    c2s
+-    SMS
+-    USSD
+-    discharge previous verifications.
+
